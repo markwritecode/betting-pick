@@ -1,5 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+// import "./globals.css";
+import Script from 'next/script';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,8 +21,482 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+        <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/assets/css/animate.css"/>
+        <link rel="stylesheet" href="/assets/css/animate.min.css"/>
+        <link rel="stylesheet" href="/assets/css/all.min.css"/>
+        <link rel="stylesheet" href="/assets/css/owl.carousel.min.css"/>
+        <link rel="stylesheet" href="/assets/css/odometer.min.css"/>
+        <link rel="stylesheet" href="/assets/css/OverlayScrollbars.min.css"/>
+        <link href="assets/css/aos.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="assets/css/style.css"/>
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      
+        <div className="preloader">
+            <div className="icon">
+                <img src="/assets/img/preloader/preload-1.gif" alt=""/>
+                <img src="/assets/img/preloader/preload-2.gif" alt=""/>
+                <img src="/assets/img/preloader/preload-5.gif" alt=""/>
+                <img src="/assets/img/preloader/preload-4.gif" alt=""/>
+                <img src="/assets/img/preloader/preload-3.gif" alt=""/>
+            </div>
+            <span className="text">
+                peredion is loading
+            </span>
+        </div>
+        <div className="bet-slip">
+            <button className="bet-slip-header collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBetSlip" aria-expanded="false" aria-controls="collapseBetSlip">
+                <span className="icon"><i className="fa-light fa-clipboard-list"></i></span>
+                <span className="text">betslip</span>
+                <span className="slip-quantity-badge">3</span>
+            </button>
+            <div className="collapse" id="collapseBetSlip">
+                <div className="bet-slip-body">
+                    <ul className="nav nav-pills bet-slip-category" id="bsCategory-tab" role="tablist">
+                        <li className="nav-item" role="presentation">
+                            <button className="nav-link active" id="bsCat-single-tab" data-bs-toggle="pill" data-bs-target="#bsCategory-home" type="button" role="tab" aria-controls="bsCategory-home" aria-selected="true">Single</button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button className="nav-link" id="bsCat-combo-tab" data-bs-toggle="pill" data-bs-target="#bsCategory-profile" type="button" role="tab" aria-controls="bsCategory-profile" aria-selected="false">Combo</button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button className="nav-link" id="bsCat-system-tab" data-bs-toggle="pill" data-bs-target="#bsCategory-contact" type="button" role="tab" aria-controls="bsCategory-contact" aria-selected="false">System</button>
+                        </li>
+                    </ul>
+                    <div className="tab-content" id="bsCategory-tabContent">
+                        <div className="tab-pane fade show active" id="bsCategory-home" role="tabpanel" aria-labelledby="bsCat-single-tab">
+                            <div className="part-slip-header">
+                                <div className="all-bs-card">
+                                    <div className="empty-card">
+                                        <img src="/assets/img/playing-bet/bet-slip/empty-icon.png" alt=""/>
+                                        <h4 className="empty-title">Your bet slip is empty!</h4>
+                                        <p>looks like you haven’t placed <br/> a bet yet to your bet slip.</p>
+                                    </div>
+                                    <div className="successfull-card">
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2" >
+                                            <circle className="path circle" fill="none" stroke="#73AF55" strokeWidth="6" strokeMiterlimit="10" cx="65.1" cy="65.1" r="62.1"></circle>
+                                            <polyline className="path check" fill="none" stroke="#73AF55" strokeWidth="6" strokeLinecap="round" strokeMiterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
+                                        </svg>
+                                        <h4 className="empty-title">Bet is placed successfully!</h4>
+                                        <p>so, you can check your placed  <br/> bets in dashboard.</p>
+                                    </div>
+                                    <div className="single-bs-card singleBS hidden"></div>
+                                </div>
+                                <div className="form-check form-switch odd-changing">
+                                    <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Accept if odd changes</label>
+                                    <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="tab-pane fade" id="bsCategory-profile" role="tabpanel" aria-labelledby="bsCat-combo-tab">
+                            <div className="part-slip-header">
+                                <div className="all-bs-card">
+                                    <div className="successfull-card combo-system-empty">
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2" >
+                                            <circle className="path circle" fill="none" stroke="#73AF55" strokeWidth="6" strokeMiterlimit="10" cx="65.1" cy="65.1" r="62.1"></circle>
+                                            <polyline className="path check" fill="none" stroke="#73AF55" strokeWidth="6" strokeLinecap="round" strokeMiterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
+                                        </svg>
+                                        <h4 className="empty-title">Bet is placed successfully!</h4>
+                                        <p>so, you can check your placed  <br/> bets in dashboard.</p>
+                                    </div>
+                                    <div className="empty-card combo-system-empty">
+                                        <img src="/assets/img/playing-bet/bet-slip/empty-icon.png" alt=""/>
+                                        <h4 className="empty-title">Your bet slip is empty!</h4>
+                                        <p>looks like you haven’t placed <br/> a bet yet to your bet slip.</p>
+                                    </div>
+                                    <div className="single-bs-card card-combo hidden"></div>
+                                </div>
+                            </div>
+                            <div className="bet-quantity">
+                                <div className="title">
+                                    <span className="title-text">multy bet</span>
+                                </div>
+                                <div className="single-list">
+                                    <span className="text">overall odds :</span>
+                                    <span className="number">1</span>
+                                </div>
+                                <div className="single-list">
+                                    <span className="text">Combo (1x) :</span>
+                                    <div className="inc-dec-bet">
+                                        <button className="dec-btn"><i className="fa-solid fa-minus"></i></button>
+                                        <span className="result-num"></span>
+                                        <button className="inc-btn"><i className="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="form-check form-switch odd-changing oc-for-combo">
+                                <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Accept if odd changes</label>
+                                <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
+                            </div>
+                        </div>
+                        <div className="tab-pane fade" id="bsCategory-contact" role="tabpanel" aria-labelledby="bsCat-system-tab">
+                            <div className="part-slip-header">
+                                <div className="all-bs-card">
+                                    <div className="successfull-card combo-system-empty">
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2" >
+                                            <circle className="path circle" fill="none" stroke="#73AF55" strokeWidth="6" strokeMiterlimit="10" cx="65.1" cy="65.1" r="62.1"></circle>
+                                            <polyline className="path check" fill="none" stroke="#73AF55" strokeWidth="6" strokeLinecap="round" strokeMiterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
+                                        </svg>
+                                        <h4 className="empty-title">Bet is placed successfully!</h4>
+                                        <p>so, you can check your placed  <br/> bets in dashboard.</p>
+                                    </div>
+                                    <div className="empty-card combo-system-empty">
+                                        <img src="/assets/img/playing-bet/bet-slip/empty-icon.png" alt=""/>
+                                        <h4 className="empty-title">Your bet slip is empty!</h4>
+                                        <p>looks like you haven’t placed <br/> a bet yet to your bet slip.</p>
+                                    </div>
+                                    <div className="single-bs-card card-system hidden"></div>
+                                </div>
+                            </div>
+                            <div className="bet-quantity">
+                                <div className="title sytem-title">
+                                    <span className="title-text">multy bet</span>
+                                    <div className="system-bet-option">
+                                        <div className="btn-group">
+                                            <button type="button" className="bet-option-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                                2/3 (3 Bets)
+                                            </button>
+                                            <ul className="dropdown-menu dropdown-menu-end">
+                                                <li><button className="dropdown-item" data-bet-add="3" type="button">2/3 (3 Bets)</button></li>
+                                                <li><button className="dropdown-item" data-bet-add="4" type="button">Trixie (4 Bets)</button></li>
+                                                <li><button className="dropdown-item" data-bet-add="7" type="button">Patent (7 Bets)</button></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="single-list">
+                                    <span className="text">overall odds :</span>
+                                    <span className="number">1</span>
+                                </div>
+                                <div className="single-list">
+                                    <span className="text">Combo (1x) :</span>
+                                    <div className="inc-dec-bet">
+                                        <button className="dec-btn"><i className="fa-solid fa-minus"></i></button>
+                                        <span className="result-num">0</span>
+                                        <button className="inc-btn"><i className="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="form-check form-switch odd-changing oc-for-combo">
+                                <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Accept if odd changes</label>
+                                <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bet-slip-calculation">
+                        <div className="total-calc">
+                            <div className="single-calc">
+                                <span className="text">Total stake :</span>
+                                <span className="number total-stake">1</span>
+                            </div>
+                            <div className="single-calc">
+                                <span className="text">Total est. return :</span>
+                                <span className="number total-est-return">1.00</span>
+                            </div>
+                        </div>
+                        <div className="calc-finish">
+                            <button className="prd-btn-1 medium placed-to-dashboard" id="btn1">place your bet <i className="fa-duotone fa-arrow-right"></i></button>
+                            <button className="calc-dlt">
+                                <i className="fa-light fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className="modal fade" id="comming_soon" tabIndex="-1" aria-labelledby="comming_soon" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">Attention!</h5>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    <div className="modal-body text-center bg-dark text-white">
+                        <h4>Dark Version is comming soon</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div className="header animated">
+            <div className="top-bar topbar-transparent">
+                <div className="container">
+                    <div className="row justify-content-between">
+                        <div className="col-xl-5 col-lg-5 col-md-7">
+                            <div className="left-side">
+                                <div className="single-bar">
+                                    <a className="dashboard-overview" href="dashboard-overview.html">
+                                        <span className="part-icon">
+                                            <i className="fa-regular fa-circle-user"></i>
+                                        </span>
+                                        <span className="part-text">hi, <span className="user-name">john doe</span></span>
+                                    </a>
+                                </div>
+                                <div className="single-bar">
+                                    <a className="dashboard-overview" href="mailto: abc@example.com">
+                                        <span className="part-icon">
+                                            <i className="fa-regular fa-envelope"></i>
+                                        </span>
+                                        <span className="part-text">predion@mail.co</span>
+                                    </a>
+                                </div>
+                                <div className="single-bar dropdown">
+                                    <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"  className="dashboard-overview">
+                                        <span className="part-icon">
+                                            <i className="fa-regular fa-globe"></i>
+                                        </span>
+                                        <span className="part-text lang-display">eng</span>
+                                    </a>
+                                    <ul className="dropdown-menu lang-item" aria-labelledby="dropdownMenuLink">
+                                        <li><a className="dropdown-item" href="#">ENG</a></li>
+                                        <li><a className="dropdown-item" href="#">বাংলা</a></li>
+                                        <li><a className="dropdown-item" href="#">عربي</a></li>
+                                        <li><a className="dropdown-item" href="#">हिन्दी</a></li>
+                                        <li><a className="dropdown-item" href="#">Español</a></li>
+                                        <li><a className="dropdown-item" href="#">贛語</a></li>
+                                        <li><a className="dropdown-item" href="#">Հայերեն</a></li>
+                                        <li><a className="dropdown-item" href="#">Ўзбек</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xl-5 col-lg-5 col-md-5">
+                            <div className="right-side">
+                                <div className="single-bar">
+                                    <span className="part-icon">
+                                        <i className="fa-regular fa-calendars"></i>
+                                    </span>
+                                    <span className="part-text">
+                                        <span id="date"></span>
+                                        <span id="month"></span>
+                                        <span id="year"></span>
+                                    </span>
+                                </div>
+                                <div className="single-bar">
+                                    <span className="part-icon">
+                                        <i className="fa-solid fa-timer"></i>
+                                    </span>
+                                    <span className="part-text"><span className="timer" id="hours"></span>:<span className="timer" id="minutes"></span>:<span className="timer" id="seconds"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="mobile-navbar">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-6 col-xl-none col-lg-none col-md-block d-flex align-items-center">
+                            <a className='mobile-logo' href='index.html'>
+                                <img src="/assets/img/logo/mobile-logo.png" alt=""/>
+                            </a>
+                        </div>
+                        <div className="col-6 col-xl-none col-lg-none col-lg-block">
+                            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <i className="fa-light fa-bars"></i>
+                            </button>
+                            <button className="changing-version" data-bs-toggle="modal" data-bs-target="#comming_soon">
+                                <i className="fa-solid fa-moon-stars"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="mainmenu">
+                <div className="container">
+                    <nav className="navbar navbar-expand-lg">
+                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                            <div className="scalation">
+                                <div className="row">
+                                    <div className="col-xl-5 col-lg-5">
+                                        <ul className="navbar-nav nn-left">
+                                            <li className="nav-item dropdown">
+                                                <a className="nav-link dropdown-toggle active" href="#" id="home-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Home
+                                                </a>
+                                                <ul className="dropdown-menu custom-dropdown" aria-labelledby="home-dropdown">
+                                                    <li><a className='dropdown-item active' href='index.html'>Homepage 01</a></li>
+                                                    <li><a className='dropdown-item' href='index-2.html'>Homepage 02</a></li>
+                                                    <li><a className='dropdown-item' href='index-3.html'>Homepage 03</a></li>
+                                                    <li><a className='dropdown-item' href='index-4.html'>Homepage 04</a></li>
+                                                    <li><a className='dropdown-item' href='index-5.html'>Homepage 05</a></li>
+                                                    <li><a className='dropdown-item' href='index-6.html'>Homepage 06</a></li>
+                                                    <li><a className='dropdown-item' href='index-7.html'>Homepage 07</a></li>
+                                                    <li><a className='dropdown-item' href='index-8.html'>Homepage 08</a></li>
+                                                    <li><a className='dropdown-item' href='index-9.html'>Homepage 09</a></li>
+                                                    <li><a className='dropdown-item' href='index-10.html'>Homepage 10</a></li>
+                                                </ul>
+                                            </li>
+                                            <li className="nav-item">
+                                                <a className='nav-link' href='about.html'>about us</a>
+                                            </li>
+                                            <li className="nav-item dropdown">
+                                                <a className="nav-link dropdown-toggle" href="#" id="betDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    all bets
+                                                </a>
+                                                <ul className="dropdown-menu" aria-labelledby="betDropdown">
+                                                    <li><a className='dropdown-item' href='playing-bet.html'>all bets</a></li>
+                                                    <li><a className='dropdown-item' href='playing-bet-in-play.html'>in-play</a></li>
+                                                    <li><a className='dropdown-item' href='playing-bet-upcoming.html'>upcoming</a></li>
+                                                    <li><a className='dropdown-item' href='playing-bet-finished.html'>finished</a></li>
+                                                    <li><a className='dropdown-item' href='match-details.html'>bet details</a></li>
+                                                </ul>
+                                            </li>
+                                            <li className="nav-item">
+                                                <a className='nav-link' href='contact.html'>contact us</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div className="col-2 col-lg-2 d-xl-block d-lg-block d-md-none">
+                                        <div className="logo">
+                                            <a href='index.html'>
+                                                <img src="/assets/img/logo/logo-1.png" alt=""/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-5 col-lg-5">
+                                        <ul className="navbar-nav nn-right">
+                                            <li className="nav-item dropdown">
+                                                <a className="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    pages
+                                                </a>
+                                                <ul className="dropdown-menu custom-dropdown" aria-labelledby="pagesDropdown">
+                                                    <li><a className='dropdown-item' href='blog-posts.html'>blog post</a></li>
+                                                    <li><a className='dropdown-item' href='blog-details.html'>blog details</a></li>
+                                                    <li><a className='dropdown-item' href='sign-in.html'>login</a></li>
+                                                    <li><a className='dropdown-item' href='register.html'>register</a></li>
+                                                    <li><a className='dropdown-item' href='error.html'>error 404</a></li>
+                                                    <li><a className='dropdown-item' href='affiliate.html'>affiliate</a></li>
+                                                    <li><a className='dropdown-item' href='promotion.html'>promotion</a></li>
+                                                    <li><a className='dropdown-item' href='promotion-details.html'>promo details</a></li>
+                                                    <li><a className='dropdown-item' href='ranking.html'>ranking</a></li>
+                                                    <li><a className="dropdown-item" href="#">bracket</a></li>
+                                                </ul>
+                                            </li>
+                                            <li className="nav-item">
+                                                <a className='nav-link' href='faq.html'>faq</a>
+                                            </li>
+                                            <li className="nav-item dropdown">
+                                                <a className="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    dashboard
+                                                </a>
+                                                <ul className="dropdown-menu" aria-labelledby="dashboardDropdown">
+                                                    <li><a className='dropdown-item' href='peredion-dashboard/index.html'>overview <small>(index)</small></a></li>
+                                                    <li><a className='dropdown-item' href='peredion-dashboard/dashboard-bet-history.html'>bet history</a></li>
+                                                    <li><a className='dropdown-item' href='peredion-dashboard/dashboard-transaction-history.html'>transaction</a></li>
+                                                    <li><a className='dropdown-item' href='peredion-dashboard/dashboard-deposit.html'>deposit</a></li>
+                                                    <li><a className='dropdown-item' href='peredion-dashboard/dashboard-withdraw.html'>withdrawal</a></li>
+                                                    <li><a className='dropdown-item' href='peredion-dashboard/dashboard-referral.html'>referral</a></li>
+                                                    <li><a className='dropdown-item' href='peredion-dashboard/dashboard-settings.html'>settings</a></li>
+                                                </ul>
+                                            </li>
+                                            <li className="nav-item version-changing-button">
+                                                <button className="nav-link" data-bs-toggle="modal" data-bs-target="#comming_soon">dark mode</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
         {children}
+        <div className="footer">
+            <div className="global-shape style-4">
+                <img src="/assets/img/shapes/shape-1.png" alt="" data-aos="fade-left" data-aos-duration="500" data-aos-offset="200" data-aos-easing="ease-in" data-aos-delay="500"/>
+            </div>
+            <div className="footer-top">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-xl-6 col-lg-6 col-md-8 col-sm-9">
+                            <div className="part-about">
+                                <div className="footer-logo" data-aos="fade-up" data-aos-delay="100" data-aos-duration="500" data-aos-easing="ease-in">
+                                    <a href='index.html'>
+                                        <img src="/assets/img/logo/mobile-logo.png" alt="" className="logo"/>
+                                    </a>
+                                </div>
+                                <p data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in">This allows bettors to bet over or under the bookmaker's score,<br/> and indicate what they believe the difference in points will be.</p>
+                                <ul className="importants-links">
+                                    <li className="single-link" data-aos="fade-up" data-aos-delay="200" data-aos-duration="500" data-aos-easing="ease-in">
+                                        <a href="#0">policy</a>
+                                    </li>
+                                    <li className="single-link" data-aos="fade-up" data-aos-delay="250" data-aos-duration="500" data-aos-easing="ease-in">
+                                        <a href="#0">Terms</a>
+                                    </li>
+                                    <li className="single-link" data-aos="fade-up" data-aos-delay="300" data-aos-duration="500" data-aos-easing="ease-in">
+                                        <a href="#0">license</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="footer-bottom">
+                <div className="container">
+                    <div className="footer-bottom-content">
+                        <p className="copyright-text">Copyright © 2023. All Right Reserved By Peredion</p>
+                        <ul className="social-link">
+                            <li className="single-social">
+                                <a href="#0">
+                                    <i className="fa-brands fa-facebook-f"></i>
+                                </a>
+                            </li>
+                            <li className="single-social">
+                                <a href="#0">
+                                    <i className="fa-brands fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li className="single-social">
+                                <a href="#0">
+                                    <i className="fa-brands fa-pinterest-p"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div className="footer-menu">
+                            <ul>
+                                <li>
+                                    <a className='single-menu' href='index.html'>homepage</a>
+                                </li>
+                                <li>
+                                    <a className='single-menu' href='about.html'>About Us</a>
+                                </li>
+                                <li>
+                                    <a href="lotteries.html" className="single-menu">Lotteries</a>
+                                </li>
+                                <li>
+                                    <a className='single-menu' href='blog-posts.html'>Blog</a>
+                                </li>
+                                <li>
+                                    <a className='single-menu' href='contact.html'>contact</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className="back-to-top-btn">
+            <a href="#">
+                <i className="fa-light fa-turn-up"></i>
+            </a>
+        </div>
+        
+        <Script src="assets/js/jquery-3.6.0.min.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/bootstrap.bundle.min.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/owl.carousel.min.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/clock.min.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/jquery.appear.min.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/odometer.min.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/jquery.overlayScrollbars.min.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/aos.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/main.js" strategy="beforeInteractive"/>
+        <Script src="assets/js/placing-bet.js" strategy="beforeInteractive"/>
       </body>
     </html>
   );
