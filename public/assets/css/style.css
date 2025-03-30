@@ -1698,6 +1698,7 @@ ul {
   z-index: 3;
   width: 100%;
   top: 0;
+  background: #161D35;
 }
 @media (max-width: 991.98px) {
   .header {

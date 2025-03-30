@@ -47,6 +47,7 @@ export default function RootLayout({ children }) {
                 peredion is loading
             </span>
         </div>
+        
         <div className="bet-slip">
             <button className="bet-slip-header collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBetSlip" aria-expanded="false" aria-controls="collapseBetSlip">
                 <span className="icon"><i className="fa-light fa-clipboard-list"></i></span>
@@ -70,21 +71,41 @@ export default function RootLayout({ children }) {
                         <div className="tab-pane fade show active" id="bsCategory-home" role="tabpanel" aria-labelledby="bsCat-single-tab">
                             <div className="part-slip-header">
                                 <div className="all-bs-card">
-                                    <div className="empty-card">
+
+                                    <div className="single-bs-card">
+                                        <div className="bs-card-header">
+                                            <span classNames="tournament-name">M5068. UEFA Champions League</span>
+                                            <div className="slct-place">
+                                                <span className="team-name">Over/Under</span>
+                                                <span className="attherate">@</span>
+                                                <span className="bet-ratio">1.25</span>
+                                            </div>
+                                        </div>
+                                        <div className="slct-match">
+                                            <span className="sports-category-icon">
+                                                <img src="assets/img/playing-bet/bet-slip/sports-icon.png" alt=""/>
+                                            </span>
+                                            <span className="team-1">Cagliari</span>
+                                            vs
+                                            <span className="team-2">AC Monzav</span>
+                                        </div>
+                                    </div>
+                                    {/* <div className="empty-card">
                                         <img src="/assets/img/playing-bet/bet-slip/empty-icon.png" alt=""/>
                                         <h4 className="empty-title">Your bet slip is empty!</h4>
                                         <p>looks like you haven’t placed <br/> a bet yet to your bet slip.</p>
-                                    </div>
-                                    <div className="successfull-card">
+                                    </div> */}
+                                    {/* <div className="successfull-card">
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2" >
                                             <circle className="path circle" fill="none" stroke="#73AF55" strokeWidth="6" strokeMiterlimit="10" cx="65.1" cy="65.1" r="62.1"></circle>
                                             <polyline className="path check" fill="none" stroke="#73AF55" strokeWidth="6" strokeLinecap="round" strokeMiterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "></polyline>
                                         </svg>
                                         <h4 className="empty-title">Bet is placed successfully!</h4>
                                         <p>so, you can check your placed  <br/> bets in dashboard.</p>
-                                    </div>
+                                    </div> */}
                                     <div className="single-bs-card singleBS hidden"></div>
                                 </div>
+                                
                                 <div className="form-check form-switch odd-changing">
                                     <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Accept if odd changes</label>
                                     <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
@@ -207,6 +228,7 @@ export default function RootLayout({ children }) {
                 </div>
             </div>
         </div>
+
         <div className="modal fade" id="comming_soon" tabIndex="-1" aria-labelledby="comming_soon" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
