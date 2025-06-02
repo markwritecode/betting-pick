@@ -24,15 +24,14 @@ export default function Home() {
     const fetchTournament = async ()  => {
         console.log("Fetching tournaments");
         setMatches(null);
-        const request = await fetch(`${base_url}/fetch-games?from=${matchDate.from}&to=${matchDate.to}`, {
+        const request = await fetch(`${base_url}/filter-games?from=${matchDate.from}&to=${matchDate.to}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             }
         });
-        const {dailyGames} = await request.json();
-        console.log(JSON.parse(dailyGames.games));
-        setMatches(JSON.parse(dailyGames.games));
+        const {matchSelection} = await request.json();
+        console.log(matchSelection[0]);
     }
 
     const fetchOutcome = async ()=>{
@@ -140,7 +139,7 @@ export default function Home() {
         return () => {
             console.log("Outcome Unmounted!");
         };
-    }, [])
+    }, []);
 
     useEffect(() => {
         filterOddRange()
@@ -251,7 +250,7 @@ export default function Home() {
                         <div className="col-md-2">
                             <input type="date" className="form-control p-3" placeholder="" aria-label="To Date" onChange={(e)=>{ setMatchDate((matchesDate)=>({
                                 ...matchesDate,
-                                to:e.target.value
+                                to: e.target.value
                             }))}}/>
                         </div>
 
