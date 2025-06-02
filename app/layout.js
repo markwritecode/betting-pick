@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
       
-        <div className="preloader">
+        {/* <div className="preloader">
             <div className="icon">
                 <img src="/assets/img/preloader/preload-1.gif" alt=""/>
                 <img src="/assets/img/preloader/preload-2.gif" alt=""/>
@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
             <span className="text">
                 peredion is loading
             </span>
-        </div>
+        </div> */}
         
         <div className="bet-slip">
             <button className="bet-slip-header collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBetSlip" aria-expanded="false" aria-controls="collapseBetSlip">
@@ -74,7 +74,7 @@ export default function RootLayout({ children }) {
 
                                     <div className="single-bs-card">
                                         <div className="bs-card-header">
-                                            <span classNames="tournament-name">M5068. UEFA Champions League</span>
+                                            <span className="tournament-name">M5068. UEFA Champions League</span>
                                             <div className="slct-place">
                                                 <span className="team-name">Over/Under</span>
                                                 <span className="attherate">@</span>

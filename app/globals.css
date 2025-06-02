@@ -40,3 +40,7 @@ a {
     color-scheme: dark;
   }
 }
+
+.z-3{
+  z-index: 10000;
+}

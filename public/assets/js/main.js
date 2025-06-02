@@ -190,8 +190,6 @@
                 }
             }); 
         }
-        
-        
 
         // odometer
         $('.odometer').appear(function(e) {

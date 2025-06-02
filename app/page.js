@@ -1,50 +1,89 @@
 "use client";
 import styles from "./page.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import Constants from "../constants";
 import { Random } from "random-js";
 
+const  base_url = `http://192.168.1.71:8000`;
+
+const random = new Random();
+
 
 export default function Home() {
-    const [matches, setMatches] = useState(null);
 
-    const fetchTournament = async () => {
+    const [matches, setMatches] = useState(null);
+    const [matchDate, setMatchDate] = useState({ from:dayjs().format('YYYY-MM-DD'), to: dayjs().format('YYYY-MM-DD') });
+    const [gamesInTicket, setGamesInTicket] = useState(5);
+    const [matchOutcomes, setMatchOutcomes] = useState(null);
+    const [outcomeTypes, setOutcomeTypes] = useState(null);
+    const outcomeRef = useRef(null);
+    const outcomeInputRef = useRef(null);
+    const outcomeListRef = useRef(null);
+
+    const fetchTournament = async ()  => {
         console.log("Fetching tournaments");
-        
-        const request = await fetch(`http://localhost:8000`, {
+        setMatches(null);
+        const request = await fetch(`${base_url}/fetch-games?from=${matchDate.from}&to=${matchDate.to}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             }
         });
+        const {dailyGames} = await request.json();
+        console.log(JSON.parse(dailyGames.games));
+        setMatches(JSON.parse(dailyGames.games));
+    }
+
+    const fetchOutcome = async ()=>{
+        console.log("fetching Outcomes");
+        const request = await fetch(`${base_url}/fetch-outcome`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            }
+        });
+
         const response = await request.json();
-        console.log(response);
-        setMatches(response);
+        setOutcomeTypes(response.outcomes)
+        console.log(response.outcomes);
+        
+    }
+
+    const toggleOutcome = async ()=>{
+        if(outcomeRef.current.style.display == "block"){
+            outcomeRef.current.style.display = "none";
+            return 0;
+        }
+        outcomeRef.current.style.display = "block"
+    }
+
+    const selectOutcome = async (option)=>{
+        console.log(option);
+        outcomeInputRef.current.value = option;
     }
     
-    const selectMatches = async () => {
-        if(matches == null && matches.length == 0){
+    const filterOddRange = async () => {
+        if(matches == null || matches.length == 0){
             return 0;
         }
         
         const matchSelection = [];
         matches.forEach((match, index, matches) => {
-            
+            console.log(match);
             match.events[0].markets.forEach((market, index, markets)=>{
                 
-                const outcome = market.outcomes.filter(outcome => outcome.odds > 1.20 && outcome.odds < 1.30);
+                const outcome = market.outcomes.filter(outcome => outcome.odds > 1.10 && outcome.odds < 1.19);
                 if(outcome != null && outcome.length != 0 && market.id !== 10){
                     const matchObject = {   
                         event: match.events[0],
                         marketId: market.id,
-                        specifier: null
+                        specifier: market.specifier
                     }
                     if(outcome.length === 1){
                          matchObject.outcome = outcome[0];   
                     }
                     if(outcome.length > 1){
-                        const random = new Random();
                         const randomNum = random.integer(1, outcome.length);
                         matchObject.outcome = outcome[randomNum-1]; 
                     }
@@ -53,17 +92,69 @@ export default function Home() {
                 
             })
         });
-
+        setMatchOutcomes(matchSelection);
         console.log(matchSelection);
 
     }
 
+    const randomSelect = async () => {
+        if(matchOutcomes == null || matchOutcomes.length == 0){
+            return 0;
+        }
+        
+        const randomSelection = [];
+        
+        while (gamesInTicket > randomSelection.length) {
+            
+            const number = random.integer(1, matchOutcomes.length);
+            const randomMatch = matchOutcomes[number-1]
+            if (!randomSelection.find(selection => selection.eventId === randomMatch.event.eventId) && randomMatch.marketId !== "10"){
+                randomSelection.push({
+                    "eventId": randomMatch.event.eventId,
+                    "marketId": randomMatch.marketId,
+                    "outcomeId": randomMatch.outcome.id,
+                    "specifier": randomMatch.specifier
+                });
+            }
+            
+        }
+
+        const request = await fetch(`${base_url}/book-ticket`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({betslip:randomSelection})
+        });
+
+        const { ticket} = await request.json();
+
+        alert(ticket.data.shareCode);
+
+        console.log(randomSelection);
+
+    }
+
     useEffect(() => {
-        fetchTournament();
+        fetchOutcome();
+        return () => {
+            console.log("Outcome Unmounted!");
+        };
+    }, [])
+
+    useEffect(() => {
+        filterOddRange()
         return () => {
           console.log("Component Unmounted!");
         };
-    }, []);
+    }, [matches]);
+
+    useEffect(() => {
+        randomSelect()
+        return () => {
+          console.log("Component Unmounted!");
+        };
+    }, [matchOutcomes]);
 
     return (
         
@@ -147,19 +238,51 @@ export default function Home() {
                         </li>
                     </ul>
                 </div>
+   
+                <div className="container mb-4">
+                    <div className="row justify-content-center align-items-center g-2">
+                        <div className="col-md-2">
+                            <input type="date" className="form-control p-3" placeholder="" aria-label="From Date" onChange={(e)=>{ setMatchDate((matchesDate)=>({
+                                ...matchesDate,
+                                from:e.target.value
+                            }))}}/>
+                        </div>
+                        
+                        <div className="col-md-2">
+                            <input type="date" className="form-control p-3" placeholder="" aria-label="To Date" onChange={(e)=>{ setMatchDate((matchesDate)=>({
+                                ...matchesDate,
+                                to:e.target.value
+                            }))}}/>
+                        </div>
 
-                <div className="faq">
-                    
-                    <div className="container">
-                        <div className="row justify-content-center">
-                            <div className="col-xl-10 col-lg-10">
-                                <div className="search-bar-element" data-aos="fade-up" data-aos-delay="50" data-aos-duration="500" data-aos-easing="ease-in">
-                                    <form>
-                                        <input type="text" placeholder="Ask a question..."/>
-                                        <button type="button" onClick={selectMatches}><i className="fa-light fa-magnifying-glass"></i></button>
-                                    </form>
+                        <div className="col-md-2">
+                            <div className="position-relative">
+                                <input type="text" className="form-control p-3 " placeholder="Included Outcomes" aria-label="Last name" onFocus={toggleOutcome} ref={outcomeInputRef}/>
+                                <div className="card position-absolute w-100 mt-2" style={{zIndex:"1000", display:"none"}} ref={outcomeRef}>
+                                    <ul className="list-group list-group-flush">
+                                        {
+                                            outcomeTypes ? 
+                                            outcomeTypes.map((outcomeType, index)=>(
+                                                <>
+                                                    <li className="list-group-item" key={index} onClick={ () => { selectOutcome(outcomeType.name); toggleOutcome(); } }>{outcomeType.name}</li>
+                                                </> 
+                                            ))
+                                            :
+                                            <li className="list-group-item">No Outcome Avaliable</li>
+                                        }
+                                        
+                                    </ul>
                                 </div>
                             </div>
+                            
+                        </div>
+
+                        <div className="col-md-2">
+                            <input type="text" className="form-control p-3" placeholder="Games IN Ticket" aria-label="Last name" onChange={(e)=>{ setGamesInTicket(e.target.value)}}/>
+                        </div>
+                        
+                        <div className="col-md-2 ">
+                            <button type="button" onClick={fetchTournament} className="btn btn-primary p-3 px-4 border-0 w-100" style={{background:"linear-gradient(135.89deg, #D03355 -5.11%, #FB7A6B 97.89%)"}} >Generate</button>
                         </div>
                     </div>
                 </div>
@@ -176,86 +299,86 @@ export default function Home() {
                                     <span className="single-sports-img">
                                         <img src="assets/img/playing-bet/football-bg.png" alt=""/>
                                     </span>
-                                    <a href="#" className="see-all-sports-btn">See all <i className="fa-light fa-arrow-right-long"></i></a>
+                                    <a href="#" className="see-all-sports-btn">Create BetSlip <i className="fa-light fa-arrow-right-long"></i></a>
                                 </div>
                             </h2>
                             
-                            
-                                <div className="sports-expanded-list">
-                                    <div className="sports-body">
-                                        <div className="playing-sports-all no-tabs-here">
-                                            <div className="single-tournament">
-                                                {/* <div className="tournament-title">
-                                                    <span className="title-text">Football Matches</span>
-                                                    <span className="match-quantity">(3)</span>
-                                                </div> */}
-                                                <div className="all-tournament-match">
-                                                    
-                                                    { matches ?
-                                                        matches.map((match, index)=>(
-                                                            <div className="single-t-match">
-                                                                <div className="match-time">
-                                                                    <span className="time-icon">
-                                                                        <i className="fa-regular fa-clock"></i>
-                                                                    </span>
-                                                                    <span className="m-date">24 Nov</span>
-                                                                    <span className="m-time">9:22 am</span>
-                                                                </div>
-                                                                <div className="playing-teams">
-                                                                    <div className="single-team">
-                                                                        <div className="team-descr">
-                                                                            <span className="team-icon">
-                                                                                <img src="assets/img/playing-bet/team-icon/team-3.png" alt=""/>
-                                                                            </span>
-                                                                            <span className="team-name">{match.events[0].homeTeamName}</span>
-                                                                        </div>
-                                                                        <div className="team-score">0</div>
-                                                                    </div>
-                                                                    <div className="single-team">
-                                                                        <div className="team-descr">
-                                                                            <span className="team-icon">
-                                                                                <img src="assets/img/playing-bet/team-icon/team-4.png" alt=""/>
-                                                                            </span>
-                                                                            <span className="team-name">{match.events[0].awayTeamName}</span>
-                                                                        </div>
-                                                                        <div className="team-score">0</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="placing-bet">
-                                                                    <a href="#0" className="single-bet-place">
-                                                                        <span className="bet-ratio">{match.events[0].markets[0].outcomes[0].odds}</span>
-                                                                        <span className="team-name">{match.events[0].homeTeamName}</span>
-                                                                    </a>
-                                                                    <a href="#0" className="single-bet-place draw-box">
-                                                                        <span className="bet-ratio">{match.events[0].markets[0].outcomes[1].odds}</span>
-                                                                        <span className="team-name">draw</span>
-                                                                    </a>
-                                                                    <a href="#0" className="single-bet-place">
-                                                                        <span className="bet-ratio">{match.events[0].markets[0].outcomes[1].odds }</span>
-                                                                        <span className="team-name">{match.events[0].awayTeamName}</span>
-                                                                    </a>
-                                                                </div>
-                                                                <span className="bet-ratio-details">
-                                                                    <a href='match-details.html'>33 <i className="fa-regular fa-angle-right"></i></a>
+                            <div className="sports-expanded-list">
+                                <div className="sports-body">
+                                    <div className="playing-sports-all no-tabs-here">
+                                        <div className="single-tournament">
+                                            {/* <div className="tournament-title">
+                                                <span className="title-text">Football Matches</span>
+                                                <span className="match-quantity">(3)</span>
+                                            </div> */}
+                                            <div className="all-tournament-match">
+                                                
+                                                { matches ?
+                                                    matches.map((match, index)=>(
+                                                        <div key={index} className="single-t-match">
+                                                            <div className="match-time">
+                                                                <span className="time-icon">
+                                                                    <i className="fa-regular fa-clock"></i>
                                                                 </span>
+                                                                <span className="m-date">24 Nov</span>
+                                                                <span className="m-time">9:22 am</span>
                                                             </div>
-                                                        )) :
-                                                        <div className="d-flex justify-content-center py-5">
-                                                            <div className="spinner-border" role="status">
-                                                                <span className="visually-hidden">Loading...</span>
+                                                            <div className="playing-teams">
+                                                                <div className="single-team">
+                                                                    <div className="team-descr">
+                                                                        <span className="team-icon">
+                                                                            <img src="assets/img/playing-bet/team-icon/team-3.png" alt=""/>
+                                                                        </span>
+                                                                        <span className="team-name">{match.events[0].homeTeamName}</span>
+                                                                    </div>
+                                                                    <div className="team-score">0</div>
+                                                                </div>
+                                                                <div className="single-team">
+                                                                    <div className="team-descr">
+                                                                        <span className="team-icon">
+                                                                            <img src="assets/img/playing-bet/team-icon/team-4.png" alt=""/>
+                                                                        </span>
+                                                                        <span className="team-name">{match.events[0].awayTeamName}</span>
+                                                                    </div>
+                                                                    <div className="team-score">0</div>
+                                                                </div>
                                                             </div>
+                                                            {/* <div className="placing-bet">
+                                                                <a href="#0" className="single-bet-place">
+                                                                    <span className="bet-ratio">{match.events[0].markets[0].outcomes[0].odds}</span>
+                                                                    <span className="team-name">{match.events[0].homeTeamName}</span>
+                                                                </a>
+                                                                <a href="#0" className="single-bet-place draw-box">
+                                                                    <span className="bet-ratio">{match.events[0].markets[0].outcomes[1].odds}</span>
+                                                                    <span className="team-name">draw</span>
+                                                                </a>
+                                                                <a href="#0" className="single-bet-place">
+                                                                    <span className="bet-ratio">{match.events[0].markets[0].outcomes[1].odds}</span>
+                                                                    <span className="team-name">{match.events[0].awayTeamName}</span>
+                                                                </a>
+                                                            </div>
+                                                            <span className="bet-ratio-details">
+                                                                <a href='match-details.html'>33 <i className="fa-regular fa-angle-right"></i></a>
+                                                            </span> */}
                                                         </div>
-                                                    }
-                                                </div>
+                                                    )) :
+                                                    <div className="d-flex justify-content-center py-5">
+                                                        <div className="spinner-border" role="status">
+                                                            <span className="visually-hidden">Loading...</span>
+                                                        </div>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                             
                             
                         </div>
                     </div>
                 </div>
+
                 <div className="see-all-sports-btn-cover" data-aos="fade-up" data-aos-delay="150" data-aos-duration="500" data-aos-easing="ease-in">
                     <a className='prd-btn-4' href='playing-bet.html'>see all sports <i className="fa-duotone fa-arrow-right"></i></a>
                 </div>
