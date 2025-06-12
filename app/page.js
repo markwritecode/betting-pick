@@ -12,26 +12,30 @@ const random = new Random();
 
 export default function Home() {
 
-    const [matches, setMatches] = useState(null);
-    const [matchDate, setMatchDate] = useState({ from:dayjs().format('YYYY-MM-DD'), to: dayjs().format('YYYY-MM-DD') });
-    const [gamesInTicket, setGamesInTicket] = useState(5);
+    const [filteredMatches, setfilteredMatches] = useState([]);
     const [matchOutcomes, setMatchOutcomes] = useState(null);
     const [outcomeTypes, setOutcomeTypes] = useState(null);
     const outcomeRef = useRef(null);
     const outcomeInputRef = useRef(null);
     const outcomeListRef = useRef(null);
 
-    const fetchTournament = async ()  => {
+    const filterGames = async (e)  => {
         console.log("Fetching tournaments");
-        setMatches(null);
-        const request = await fetch(`${base_url}/filter-games?from=${matchDate.from}&to=${matchDate.to}`, {
-            method: "GET",
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const jsonData = Object.fromEntries(formData.entries());
+        const request = await fetch(`${base_url}/filter-games`, {
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
-            }
+            },
+            body: JSON.stringify(jsonData)
         });
-        const {matchSelection} = await request.json();
-        console.log(matchSelection[0]);
+        
+        const { matchSelection } = await request.json();
+        console.log( matchSelection );
+        setfilteredMatches(matchSelection);
+        
     }
 
     const fetchOutcome = async ()=>{
@@ -60,40 +64,6 @@ export default function Home() {
     const selectOutcome = async (option)=>{
         console.log(option);
         outcomeInputRef.current.value = option;
-    }
-    
-    const filterOddRange = async () => {
-        if(matches == null || matches.length == 0){
-            return 0;
-        }
-        
-        const matchSelection = [];
-        matches.forEach((match, index, matches) => {
-            console.log(match);
-            match.events[0].markets.forEach((market, index, markets)=>{
-                
-                const outcome = market.outcomes.filter(outcome => outcome.odds > 1.10 && outcome.odds < 1.19);
-                if(outcome != null && outcome.length != 0 && market.id !== 10){
-                    const matchObject = {   
-                        event: match.events[0],
-                        marketId: market.id,
-                        specifier: market.specifier
-                    }
-                    if(outcome.length === 1){
-                         matchObject.outcome = outcome[0];   
-                    }
-                    if(outcome.length > 1){
-                        const randomNum = random.integer(1, outcome.length);
-                        matchObject.outcome = outcome[randomNum-1]; 
-                    }
-                    matchSelection.push(matchObject);
-                }
-                
-            })
-        });
-        setMatchOutcomes(matchSelection);
-        console.log(matchSelection);
-
     }
 
     const randomSelect = async () => {
@@ -141,12 +111,7 @@ export default function Home() {
         };
     }, []);
 
-    useEffect(() => {
-        filterOddRange()
-        return () => {
-          console.log("Component Unmounted!");
-        };
-    }, [matches]);
+    
 
     useEffect(() => {
         randomSelect()
@@ -239,51 +204,55 @@ export default function Home() {
                 </div>
    
                 <div className="container mb-4">
-                    <div className="row justify-content-center align-items-center g-2">
-                        <div className="col-md-2">
-                            <input type="date" className="form-control p-3" placeholder="" aria-label="From Date" onChange={(e)=>{ setMatchDate((matchesDate)=>({
-                                ...matchesDate,
-                                from:e.target.value
-                            }))}}/>
-                        </div>
-                        
-                        <div className="col-md-2">
-                            <input type="date" className="form-control p-3" placeholder="" aria-label="To Date" onChange={(e)=>{ setMatchDate((matchesDate)=>({
-                                ...matchesDate,
-                                to: e.target.value
-                            }))}}/>
-                        </div>
-
-                        <div className="col-md-2">
-                            <div className="position-relative">
-                                <input type="text" className="form-control p-3 " placeholder="Included Outcomes" aria-label="Last name" onFocus={toggleOutcome} ref={outcomeInputRef}/>
-                                <div className="card position-absolute w-100 mt-2" style={{zIndex:"1000", display:"none"}} ref={outcomeRef}>
-                                    <ul className="list-group list-group-flush">
-                                        {
-                                            outcomeTypes ? 
-                                            outcomeTypes.map((outcomeType, index)=>(
-                                                <>
-                                                    <li className="list-group-item" key={index} onClick={ () => { selectOutcome(outcomeType.name); toggleOutcome(); } }>{outcomeType.name}</li>
-                                                </> 
-                                            ))
-                                            :
-                                            <li className="list-group-item">No Outcome Avaliable</li>
-                                        }
-                                        
-                                    </ul>
-                                </div>
+                    <form onSubmit={filterGames}>
+                        <div className="row align-items-center g-2">
+                            <div className="col-md-2">
+                                <input type="date" name="fromDate" className="form-control p-3" placeholder="" aria-label="From Date"/>
                             </div>
                             
-                        </div>
+                            <div className="col-md-2">
+                                <input type="date" name="toDate" className="form-control p-3" placeholder="" aria-label="To Date" />
+                            </div>
 
-                        <div className="col-md-2">
-                            <input type="text" className="form-control p-3" placeholder="Games IN Ticket" aria-label="Last name" onChange={(e)=>{ setGamesInTicket(e.target.value)}}/>
+                            <div className="col-md-2">
+                                <div className="position-relative">
+                                    <input type="text" className="form-control p-3 " placeholder="Included Outcomes" aria-label="Last name" onFocus={toggleOutcome} ref={outcomeInputRef}/>
+                                    <div className="card position-absolute w-100 mt-2" style={{zIndex:"1000", display:"none"}} ref={outcomeRef}>
+                                        <ul className="list-group list-group-flush">
+                                            {
+                                                outcomeTypes ? 
+                                                outcomeTypes.map((outcomeType, index)=>(
+                                                    <>
+                                                        <li className="list-group-item" key={index} onClick={ () => { selectOutcome(outcomeType.name); toggleOutcome(); } }>{outcomeType.name}</li>
+                                                    </> 
+                                                ))
+                                                :
+                                                <li className="list-group-item">No Outcome Avaliable</li>
+                                            }
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <div className="col-md-2">
+                                <input type="text" className="form-control p-3" placeholder="Odds From" aria-label="Odds From" name="oddsFrom"/>
+                            </div>
+
+                            <div className="col-md-2">
+                                <input type="text" className="form-control p-3" placeholder="Odds To" aria-label="Odds To" name="oddsTo"/>
+                            </div>
+
+                            <div className="col-md-2">
+                                <input type="text" className="form-control p-3" placeholder="Games IN Ticket" aria-label="numberOfGames" name="numberOfGames"/>
+                            </div>
+                            
+                            <div className="col-md-12 ">
+                                <button type="submit" className="btn btn-primary p-3 px-4 border-0 w-100" style={{background:"linear-gradient(135.89deg, #D03355 -5.11%, #FB7A6B 97.89%)"}} >Generate</button>
+                            </div>
                         </div>
-                        
-                        <div className="col-md-2 ">
-                            <button type="button" onClick={fetchTournament} className="btn btn-primary p-3 px-4 border-0 w-100" style={{background:"linear-gradient(135.89deg, #D03355 -5.11%, #FB7A6B 97.89%)"}} >Generate</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 
                 <div className="tab-content" id="sports-tabContent" data-aos="fade-up" data-aos-delay="200" data-aos-duration="500" data-aos-easing="ease-in">
@@ -294,7 +263,7 @@ export default function Home() {
                                     <span className="single-sports-icon">
                                         <img src="assets/img/playing-bet/icon/icon-1.png" alt=""/>
                                     </span>
-                                    <span className="single-sports-name">Football Matches (05)</span>
+                                    <span className="single-sports-name">Football Matches ({`${filteredMatches.length}`})</span>
                                     <span className="single-sports-img">
                                         <img src="assets/img/playing-bet/football-bg.png" alt=""/>
                                     </span>
@@ -312,8 +281,8 @@ export default function Home() {
                                             </div> */}
                                             <div className="all-tournament-match">
                                                 
-                                                { matches ?
-                                                    matches.map((match, index)=>(
+                                                { filteredMatches != 0 ?
+                                                    filteredMatches.map((match, index)=>(
                                                         <div key={index} className="single-t-match">
                                                             <div className="match-time">
                                                                 <span className="time-icon">
@@ -328,7 +297,7 @@ export default function Home() {
                                                                         <span className="team-icon">
                                                                             <img src="assets/img/playing-bet/team-icon/team-3.png" alt=""/>
                                                                         </span>
-                                                                        <span className="team-name">{match.events[0].homeTeamName}</span>
+                                                                        <span className="team-name">{match.event.homeTeamName}</span>
                                                                     </div>
                                                                     <div className="team-score">0</div>
                                                                 </div>
@@ -337,7 +306,7 @@ export default function Home() {
                                                                         <span className="team-icon">
                                                                             <img src="assets/img/playing-bet/team-icon/team-4.png" alt=""/>
                                                                         </span>
-                                                                        <span className="team-name">{match.events[0].awayTeamName}</span>
+                                                                        <span className="team-name">{match.event.awayTeamName}</span>
                                                                     </div>
                                                                     <div className="team-score">0</div>
                                                                 </div>
@@ -362,9 +331,7 @@ export default function Home() {
                                                         </div>
                                                     )) :
                                                     <div className="d-flex justify-content-center py-5">
-                                                        <div className="spinner-border" role="status">
-                                                            <span className="visually-hidden">Loading...</span>
-                                                        </div>
+                                                        <h2>Filter From Available Games</h2>
                                                     </div>
                                                 }
                                             </div>
